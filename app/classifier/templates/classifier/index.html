@@ -1,11 +1,11 @@
 {% load static %}<!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="es" class="no-js">
 <head>
   <meta charset="utf-8">
   <script>document.documentElement.classList.remove('no-js')</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SpamLens · Is that text message spam?</title>
-  <meta name="description" content="Paste a text message and a fine-tuned transformer tells you in under a second whether it is spam, and which words gave it away. Nothing you paste is stored.">
+  <title>SpamLens · ¿Ese mensaje de texto es spam?</title>
+  <meta name="description" content="Pega un mensaje de texto y un transformer con fine-tuning te dice en menos de un segundo si es spam y qué palabras lo delataron. Nada de lo que pegues se guarda.">
   <meta name="theme-color" content="#f5f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121615" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f5f5b'/%3E%3Ccircle cx='14' cy='14' r='7' fill='none' stroke='%23f5f1ea' stroke-width='3'/%3E%3Cpath d='m19 19 6 6' stroke='%23e2725b' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -15,15 +15,15 @@
   <link rel="stylesheet" href="{% static 'classifier/styles.css' %}">
 </head>
 <body>
-  <a class="skip" href="#check">Skip to the checker</a>
+  <a class="skip" href="#check">Saltar al verificador</a>
 
   <header class="topbar">
     <div class="wrap topbar__inner">
-      <a class="brand" href="#hero" aria-label="SpamLens, back to top">
+      <a class="brand" href="#hero" aria-label="SpamLens, volver arriba">
         <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><circle cx="14" cy="14" r="7"/><path d="m19 19 6 6"/></svg>
         SpamLens
       </a>
-      <a class="btn btn--ghost" href="#check">Check a message</a>
+      <a class="btn btn--ghost" href="#check">Revisar un mensaje</a>
     </div>
   </header>
 
@@ -31,30 +31,30 @@
     <section id="hero" class="hero">
       <div class="wrap hero__grid">
         <div class="hero__copy">
-          <p class="eyebrow">SMS spam detection</p>
-          <h1>Is that text message spam? Know before you tap anything.</h1>
-          <p class="lede">Paste the message. A transformer fine-tuned on thousands of real SMS reads it, gives you a verdict in about a second, and shows which words gave it away. Nothing you paste is saved.</p>
+          <p class="eyebrow">Detección de spam en SMS</p>
+          <h1>¿Ese mensaje de texto es spam? Entérate antes de tocar nada.</h1>
+          <p class="lede">Pega el mensaje. Un transformer con fine-tuning en miles de SMS reales lo lee, te da un veredicto en un segundo aproximadamente y te muestra qué palabras lo delataron. Nada de lo que pegues se guarda.</p>
           <ul class="checks">
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Catches prize scams, fake bank alerts and premium-rate traps</li>
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Explains the verdict word by word</li>
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Built for English SMS, and catches common Spanish scams too</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Detecta estafas de premios, falsas alertas bancarias y trampas de tarifa premium</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Explica el veredicto palabra por palabra</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Hecho para SMS en inglés, y también detecta estafas comunes en español</li>
           </ul>
         </div>
 
         <div class="checker" id="check">
           <form class="checker__form" method="post" action="{% url 'index' %}#check" data-checker novalidate>
             {% csrf_token %}
-            <label class="checker__label" for="{{ form.message.id_for_label }}">Your message</label>
+            <label class="checker__label" for="{{ form.message.id_for_label }}">Tu mensaje</label>
             {{ form.message }}
             <div class="checker__row">
-              <p id="message-help" class="checker__help"><span data-count>0</span> / 2000 characters</p>
+              <p id="message-help" class="checker__help"><span data-count>0</span> / 2000 caracteres</p>
               <button class="btn btn--primary" type="submit" data-submit>
-                <span class="btn__text">Check my message</span>
+                <span class="btn__text">Revisar mi mensaje</span>
                 <span class="spinner" aria-hidden="true"></span>
               </button>
             </div>
-            <div class="samples" role="group" aria-label="Try an example">
-              <span class="samples__label">Or try one:</span>
+            <div class="samples" role="group" aria-label="Prueba un ejemplo">
+              <span class="samples__label">O prueba uno:</span>
               {% for name, text in samples %}
                 <button type="button" class="chip" data-sample="{{ text }}">{{ name }}</button>
               {% endfor %}
@@ -62,7 +62,7 @@
           </form>
           {% include 'classifier/_result.html' %}
           {% if not is_finetuned %}
-            <p class="notice">Running the original pretrained model because the fine-tuned weights were not found. See the README to download them; until then, expect many false alarms on SMS.</p>
+            <p class="notice">Se está usando el modelo preentrenado original porque no se encontraron los pesos con fine-tuning. Consulta el README para descargarlos; mientras tanto, espera muchas falsas alarmas en SMS.</p>
           {% endif %}
         </div>
       </div>
@@ -70,22 +70,22 @@
 
     <section id="how" class="section">
       <div class="wrap">
-        <h2 class="reveal">From your message to a verdict in three passes</h2>
+        <h2 class="reveal">De tu mensaje a un veredicto en tres pasos</h2>
         <ol class="steps">
           <li class="reveal">
             <span class="steps__n mono">01</span>
-            <h3>Split into pieces it knows</h3>
-            <p>A SentencePiece tokenizer cuts the message into subwords from a 250,000-token vocabulary shared across about 100 languages, so slang like "txt" or "ur" and a Spanish "ganaste" all get a representation.</p>
+            <h3>Se divide en piezas que reconoce</h3>
+            <p>Un tokenizador SentencePiece corta el mensaje en subpalabras de un vocabulario de 250,000 tokens compartido por unos 100 idiomas, así que la jerga como "txt" o "ur" y un "ganaste" en español reciben su representación.</p>
           </li>
           <li class="reveal">
             <span class="steps__n mono">02</span>
-            <h3>Scored by a compact transformer</h3>
-            <p>Twelve attention layers of <a href="https://huggingface.co/Goodmotion/spam-mail-classifier">Goodmotion/spam-mail-classifier</a>, a Multilingual MiniLM, read the whole message at once. We fine-tuned it on SMS because it was originally trained on email subject lines.</p>
+            <h3>Puntuado por un transformer compacto</h3>
+            <p>Doce capas de atención de <a href="https://huggingface.co/Goodmotion/spam-mail-classifier">Goodmotion/spam-mail-classifier</a>, un MiniLM multilingüe, leen el mensaje completo de una vez. Le hicimos fine-tuning con SMS porque originalmente se entrenó con asuntos de correos electrónicos.</p>
           </li>
           <li class="reveal">
             <span class="steps__n mono">03</span>
-            <h3>Explained, not just labeled</h3>
-            <p>We remove each word in turn and measure how much the spam probability moves. Words that raise it are marked in red, words that lower it in green, so you can judge the verdict yourself.</p>
+            <h3>Explicado, no solo etiquetado</h3>
+            <p>Quitamos cada palabra por turnos y medimos cuánto cambia la probabilidad de spam. Las palabras que la suben se marcan en rojo y las que la bajan en verde, para que tú mismo juzgues el veredicto.</p>
           </li>
         </ol>
       </div>
@@ -95,20 +95,20 @@
     <section id="evidence" class="section section--tint">
       <div class="wrap evidence">
         <div class="evidence__copy reveal">
-          <h2>The published model was trained on emails. Text messages needed a second lesson.</h2>
-          <p>Taken as published, the pretrained model flagged most ordinary text messages as spam: informal SMS full of abbreviations and numbers looked suspicious to a model raised on email subjects. Fine-tuning the same network on our training split fixed that.</p>
-          <p>We also measured it against a classic word-frequency model, and we show that result too: on English SMS the two are practically tied. The transformer ranks messages more reliably and reads beyond the English vocabulary it was trained on.</p>
-          <p class="muted">Spam F1 on {{ test_size }} held-out test messages that no model or threshold choice ever saw. Full method in the <a href="https://github.com/Aguado4/spamlens-hacking-ai-Aguado-Cruz-Ramirez/blob/main/notebook/spam_detection.ipynb">notebook</a>.</p>
+          <h2>El modelo publicado se entrenó con correos. Los mensajes de texto necesitaban una segunda lección.</h2>
+          <p>Tal cual se publicó, el modelo preentrenado marcaba como spam la mayoría de los mensajes normales: los SMS informales, llenos de abreviaturas y números, le parecían sospechosos a un modelo criado con asuntos de correo. Hacer fine-tuning de la misma red con nuestra partición de entrenamiento lo corrigió.</p>
+          <p>También lo comparamos con un modelo clásico de frecuencia de palabras y mostramos ese resultado: en SMS en inglés quedan prácticamente empatados. El transformer ordena los mensajes con más fiabilidad y entiende más allá del vocabulario en inglés con el que se entrenó.</p>
+          <p class="muted">F1 de spam sobre {{ test_size }} mensajes de prueba reservados que ningún modelo ni elección de umbral llegó a ver. Método completo en el <a href="https://github.com/Aguado4/spamlens-hacking-ai-Aguado-Cruz-Ramirez/blob/main/notebook/spam_detection.ipynb">notebook</a>.</p>
         </div>
-        <figure class="bars reveal" aria-label="Spam F1 score on the test set by model">
+        <figure class="bars reveal" aria-label="F1 de spam en el conjunto de prueba, por modelo">
           {% for row in evidence %}
             <div class="bars__row{% if row.key == 'pretrained_fine_tuned' %} bars__row--best{% endif %}">
               <div class="bars__head"><span>{{ row.label }}</span><strong class="mono">{{ row.f1_pct }}</strong></div>
               <div class="bars__track"><span style="--v: {{ row.f1 }}"></span></div>
-              <p class="bars__detail mono">precision {{ row.precision_pct }}% · recall {{ row.recall_pct }}% · {{ row.false_positives }} false alarm{{ row.false_positives|pluralize }}</p>
+              <p class="bars__detail mono">precisión {{ row.precision_pct }}% · recall {{ row.recall_pct }}% · {{ row.false_positives }} falsa{{ row.false_positives|pluralize }} alarma{{ row.false_positives|pluralize }}</p>
             </div>
           {% endfor %}
-          <figcaption class="muted">Spam F1, 0 to 100. Higher is better.</figcaption>
+          <figcaption class="muted">F1 de spam, de 0 a 100. Más alto es mejor.</figcaption>
         </figure>
       </div>
     </section>
@@ -120,36 +120,36 @@
           <svg viewBox="0 0 64 64"><path d="M32 6 10 14v16c0 14 9.4 24.6 22 28 12.6-3.4 22-14 22-28V14L32 6Z"/><path d="m22 32 7 7 13-14"/></svg>
         </div>
         <div class="reveal">
-          <h2>Your message is read once, then forgotten</h2>
-          <p>SpamLens has no database. The text you paste lives in memory only while the model scores it, and it is never logged, stored or used for training.</p>
-          <p>We took the same care with the data we learned from. The statistics behind our analysis can be published under <strong>ε-differential privacy</strong> with the Laplace mechanism from Dwork and Roth's <a href="https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf"><em>The Algorithmic Foundations of Differential Privacy</em></a>: calibrated noise that keeps every chart readable while making it impossible to tell whether any single message was in the data.</p>
+          <h2>Tu mensaje se lee una vez y se olvida</h2>
+          <p>SpamLens no tiene base de datos. El texto que pegas vive en memoria solo mientras el modelo lo puntúa, y nunca se registra, se guarda ni se usa para entrenar.</p>
+          <p>Tuvimos el mismo cuidado con los datos de los que aprendimos. Las estadísticas detrás de nuestro análisis pueden publicarse bajo <strong>privacidad diferencial ε</strong> con el mecanismo de Laplace de <a href="https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf"><em>The Algorithmic Foundations of Differential Privacy</em></a>, de Dwork y Roth: ruido calibrado que mantiene legibles todas las gráficas y hace imposible saber si un mensaje en particular estaba en los datos.</p>
         </div>
       </div>
     </section>
 
     <section id="faq" class="section section--tint">
       <div class="wrap faq">
-        <h2 class="reveal">Questions worth asking</h2>
+        <h2 class="reveal">Preguntas que vale la pena hacer</h2>
         <div class="faq__list reveal">
           <details>
-            <summary>Can I trust the verdict completely?</summary>
-            <p>No classifier is perfect. On our test set it still let a few spam messages through and raised a handful of false alarms. Treat a "spam" verdict as a strong warning, and never act on a message that asks for codes, passwords or payments, whatever the verdict.</p>
+            <summary>¿Puedo confiar por completo en el veredicto?</summary>
+            <p>Ningún clasificador es perfecto. En nuestro conjunto de prueba aún dejó pasar algunos mensajes de spam y dio un puñado de falsas alarmas. Toma un veredicto de "spam" como una advertencia fuerte, y nunca hagas caso a un mensaje que pida códigos, contraseñas o pagos, sin importar el veredicto.</p>
           </details>
           <details>
-            <summary>Why was my message flagged?</summary>
-            <p>Look at the red words in the result. The model learned that prizes, short codes, prices, links and pressure to act now are typical of spam. A legitimate message that forwards a promotion or includes a phone number can trip the same cues.</p>
+            <summary>¿Por qué se marcó mi mensaje?</summary>
+            <p>Mira las palabras en rojo del resultado. El modelo aprendió que los premios, los códigos cortos, los precios, los enlaces y la presión para actuar ya son típicos del spam. Un mensaje legítimo que reenvía una promoción o incluye un número de teléfono puede activar las mismas señales.</p>
           </details>
           <details>
-            <summary>Does it work in Spanish?</summary>
-            <p>Partly. The underlying model was trained on many languages, but our fine-tuning data is English SMS from the UK, and that narrowed it: in our checks it still caught typical Spanish prize and bank scams, while it missed a French one it used to catch. Treat non-English verdicts as a hint, not a ruling.</p>
+            <summary>¿Funciona en español?</summary>
+            <p>En parte. El modelo base se entrenó con muchos idiomas, pero nuestros datos de fine-tuning son SMS en inglés del Reino Unido, y eso lo especializó: en nuestras pruebas aún detectó estafas típicas de premios y bancos en español, pero se le escapó una en francés que antes detectaba. Toma los veredictos en otros idiomas como una pista, no como una sentencia.</p>
           </details>
           <details>
-            <summary>What counts as spam here?</summary>
-            <p>Unsolicited bulk messages: prize and lottery scams, premium-rate traps, marketing you did not ask for and phishing. Messages from people and services you deal with count as legitimate.</p>
+            <summary>¿Qué cuenta como spam aquí?</summary>
+            <p>Mensajes masivos no solicitados: estafas de premios y loterías, trampas de tarifa premium, publicidad que no pediste y phishing. Los mensajes de personas y servicios con los que tratas cuentan como legítimos.</p>
           </details>
           <details>
-            <summary>Can I call it from code?</summary>
-            <p>Yes. Send a POST to <code>/api/classify/</code> with a JSON body like <code>{"message": "..."}</code> and you get the probability, the verdict and the word weights back as JSON.</p>
+            <summary>¿Puedo usarlo desde código?</summary>
+            <p>Sí. Envía un POST a <code>/api/classify/</code> con un cuerpo JSON como <code>{"message": "..."}</code> y recibirás la probabilidad, el veredicto y los pesos de las palabras en JSON.</p>
           </details>
         </div>
       </div>
@@ -157,9 +157,9 @@
 
     <section id="cta" class="section cta">
       <div class="wrap cta__inner reveal">
-        <h2>Got a message that feels off?</h2>
-        <p>Check it now. It takes a second and nothing is kept.</p>
-        <a class="btn btn--primary btn--lg" href="#check">Check my message</a>
+        <h2>¿Recibiste un mensaje que te huele raro?</h2>
+        <p>Revísalo ahora. Toma un segundo y no se guarda nada.</p>
+        <a class="btn btn--primary btn--lg" href="#check">Revisar mi mensaje</a>
       </div>
     </section>
   </main>
@@ -168,13 +168,13 @@
     <div class="wrap footer__grid">
       <div>
         <p class="brand brand--footer">SpamLens</p>
-        <p class="muted">Built by Juan José Aguado, Juan David Cruz and Juan Diego Ramírez for the Hacking AI course, Master's program.</p>
+        <p class="muted">Hecho por Juan José Aguado, Juan David Cruz y Juan Diego Ramírez para el curso Hacking AI de la Maestría.</p>
       </div>
       <ul class="footer__links">
-        <li><a href="https://github.com/Aguado4/spamlens-hacking-ai-Aguado-Cruz-Ramirez">Source code</a></li>
-        <li><a href="https://archive.ics.uci.edu/dataset/228/sms+spam+collection">SMS Spam Collection dataset</a></li>
-        <li><a href="https://huggingface.co/Goodmotion/spam-mail-classifier">Pretrained model</a></li>
-        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="https://github.com/Aguado4/spamlens-hacking-ai-Aguado-Cruz-Ramirez">Código fuente</a></li>
+        <li><a href="https://archive.ics.uci.edu/dataset/228/sms+spam+collection">Dataset SMS Spam Collection</a></li>
+        <li><a href="https://huggingface.co/Goodmotion/spam-mail-classifier">Modelo preentrenado</a></li>
+        <li><a href="#privacy">Privacidad</a></li>
       </ul>
     </div>
   </footer>

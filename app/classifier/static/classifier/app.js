@@ -34,7 +34,7 @@
     }
     submit.disabled = true;
     submit.classList.add('is-loading');
-    submit.querySelector('.btn__text').textContent = 'Reading...';
+    submit.querySelector('.btn__text').textContent = 'Leyendo...';
     try {
       const res = await fetch(form.action, {
         method: 'POST',
@@ -50,11 +50,11 @@
       }
     } catch {
       document.getElementById('result').innerHTML =
-        '<p class="result__error" role="alert">Something went wrong reaching the model. Try again in a moment.</p>';
+        '<p class="result__error" role="alert">Algo salió mal al contactar el modelo. Inténtalo de nuevo en un momento.</p>';
     } finally {
       submit.disabled = false;
       submit.classList.remove('is-loading');
-      submit.querySelector('.btn__text').textContent = 'Check my message';
+      submit.querySelector('.btn__text').textContent = 'Revisar mi mensaje';
     }
   });
 

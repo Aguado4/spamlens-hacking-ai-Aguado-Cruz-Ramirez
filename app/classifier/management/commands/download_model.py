@@ -15,29 +15,29 @@ RELEASE_URL = 'https://github.com/Aguado4/spamlens-hacking-ai-Aguado-Cruz-Ramire
 
 
 class Command(BaseCommand):
-    help = 'Download the SMS fine-tuned model into model/finetuned.'
+    help = 'Descarga el modelo con fine-tuning en SMS a model/finetuned.'
 
     def add_arguments(self, parser):
         parser.add_argument('--url', default=RELEASE_URL)
-        parser.add_argument('--force', action='store_true', help='Replace an existing model folder.')
+        parser.add_argument('--force', action='store_true', help='Reemplaza una carpeta de modelo existente.')
 
     def handle(self, *args, url, force, **options):
         target = settings.SPAMLENS_FINETUNED_DIR
         if (target / 'config.json').exists() and not force:
-            self.stdout.write(self.style.SUCCESS(f'Model already present at {target} (use --force to replace).'))
+            self.stdout.write(self.style.SUCCESS(f'El modelo ya está en {target} (usa --force para reemplazarlo).'))
             return
 
-        self.stdout.write(f'Downloading {url} ...')
+        self.stdout.write(f'Descargando {url} ...')
         try:
             with urllib.request.urlopen(url) as response:
                 payload = response.read()
         except OSError as exc:
-            raise CommandError(f'Download failed: {exc}') from exc
+            raise CommandError(f'Falló la descarga: {exc}') from exc
 
         with zipfile.ZipFile(io.BytesIO(payload)) as archive:
             names = archive.namelist()
             if not any(n.endswith('config.json') for n in names):
-                raise CommandError('The archive does not contain a model (config.json missing).')
+                raise CommandError('El archivo no contiene un modelo (falta config.json).')
             if target.exists():
                 shutil.rmtree(target)
             target.mkdir(parents=True)
@@ -47,4 +47,4 @@ class Command(BaseCommand):
                 # Flatten paths so a hostile archive cannot write outside the target folder.
                 (target / name.rsplit('/', 1)[-1]).write_bytes(archive.read(name))
 
-        self.stdout.write(self.style.SUCCESS(f'Model saved to {target}. Restart the server to use it.'))
+        self.stdout.write(self.style.SUCCESS(f'Modelo guardado en {target}. Reinicia el servidor para usarlo.'))

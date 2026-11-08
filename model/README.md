@@ -1,8 +1,8 @@
-# Model weights
+# Pesos del modelo
 
-This folder is ignored by git because the weights are large (about 470 MB for the original model, 240 MB for the fine-tuned fp16 copy).
+Esta carpeta es ignorada por git porque los pesos son pesados (cerca de 470 MB para el modelo original y 240 MB para la copia fine-tuned en fp16).
 
-| Folder | What it is | How to get it |
+| Carpeta | Qué es | Cómo obtenerla |
 |---|---|---|
-| `model/finetuned/` | `Goodmotion/spam-mail-classifier` fine-tuned on the SMS training split. **Used by the web app.** | `python app/manage.py download_model`, or run the notebook end to end |
-| `model/` (root files) | Optional local copy of the original [`Goodmotion/spam-mail-classifier`](https://huggingface.co/Goodmotion/spam-mail-classifier) | `huggingface-cli download Goodmotion/spam-mail-classifier --local-dir model` (otherwise the notebook downloads it from the Hub automatically) |
+| `model/finetuned/` | `Goodmotion/spam-mail-classifier` con fine-tuning sobre la partición de entrenamiento de SMS. **Es el que usa la aplicación web.** | `python app/manage.py download_model`, o ejecutar el notebook completo |
+| `model/` (archivos en la raíz) | Copia local opcional del [`Goodmotion/spam-mail-classifier`](https://huggingface.co/Goodmotion/spam-mail-classifier) original | `huggingface-cli download Goodmotion/spam-mail-classifier --local-dir model` (de lo contrario, el notebook lo descarga automáticamente desde el Hub) |

@@ -19,11 +19,11 @@ MAX_EXPLAINED_WORDS = 60
 
 # Same cues the notebook's EDA found to separate spam from ham (section 2.1).
 SIGNAL_PATTERNS = {
-    'link': (re.compile(r'(https?://|www\.|\.(com|co\.uk|net|org)\b)', re.I), 'Contains a link'),
-    'long_number': (re.compile(r'\b\d{5,}\b'), 'Contains a short code or phone number'),
-    'money': (re.compile(r'[£$€]|\b\d+\s?(p|pence|gbp|usd|eur)\b', re.I), 'Mentions money or a price'),
-    'prize': (re.compile(r'\b(free|win|won|winner|prize|claim|reward|award|cash|bonus|gana|ganaste|premio|gratis)\b', re.I), 'Uses prize or giveaway language'),
-    'urgency': (re.compile(r'\b(urgent|now|today|immediately|expires?|final|last chance|act|ahora|urgente|hoy)\b', re.I), 'Pushes you to act fast'),
+    'link': (re.compile(r'(https?://|www\.|\.(com|co\.uk|net|org)\b)', re.I), 'Contiene un enlace'),
+    'long_number': (re.compile(r'\b\d{5,}\b'), 'Contiene un código corto o un número de teléfono'),
+    'money': (re.compile(r'[£$€]|\b\d+\s?(p|pence|gbp|usd|eur)\b', re.I), 'Menciona dinero o un precio'),
+    'prize': (re.compile(r'\b(free|win|won|winner|prize|claim|reward|award|cash|bonus|gana|ganaste|premio|gratis)\b', re.I), 'Usa lenguaje de premios o sorteos'),
+    'urgency': (re.compile(r'\b(urgent|now|today|immediately|expires?|final|last chance|act|ahora|urgente|hoy)\b', re.I), 'Te presiona para actuar rápido'),
 }
 
 

@@ -9,17 +9,17 @@ from .forms import MessageForm
 from .services import get_classifier, model_card
 
 SAMPLES = [
-    ('Prize scam', 'URGENT! You have won a 1 week FREE membership in our £100,000 Prize Jackpot! Txt the word CLAIM to 81010 T&C www.dbuk.net'),
-    ('Friend', "Hey, are we still on for dinner tonight? I can pick you up around 7 if that works"),
-    ('Bank alert', 'Your account has been suspended due to unusual activity. Verify your details now at secure-bank-login.co to restore access'),
-    ('Spanish', 'Felicidades! Ganaste un iPhone 17. Reclámalo ahora enviando GANAR al 55555'),
-    ('Work', 'Running 10 min late to the standup, start without me and I will catch up on the notes'),
+    ('Estafa de premio', 'URGENT! You have won a 1 week FREE membership in our £100,000 Prize Jackpot! Txt the word CLAIM to 81010 T&C www.dbuk.net'),
+    ('Un amigo', "Hey, are we still on for dinner tonight? I can pick you up around 7 if that works"),
+    ('Alerta bancaria', 'Your account has been suspended due to unusual activity. Verify your details now at secure-bank-login.co to restore access'),
+    ('En español', 'Felicidades! Ganaste un iPhone 17. Reclámalo ahora enviando GANAR al 55555'),
+    ('Trabajo', 'Running 10 min late to the standup, start without me and I will catch up on the notes'),
 ]
 
 MODEL_LABELS = [
-    ('pretrained_zero_shot', 'Pretrained, as published'),
-    ('baseline_tfidf_logreg', 'TF-IDF baseline'),
-    ('pretrained_fine_tuned', 'Pretrained, fine-tuned on SMS (what you are using)'),
+    ('pretrained_zero_shot', 'Preentrenado, tal cual'),
+    ('baseline_tfidf_logreg', 'Baseline TF-IDF'),
+    ('pretrained_fine_tuned', 'Preentrenado + fine-tuning con SMS (el que usas)'),
 ]
 
 
@@ -78,9 +78,9 @@ def api_classify(request):
         try:
             payload = json.loads(request.body or b'{}')
         except ValueError:  # JSONDecodeError or a body that is not valid UTF-8
-            return JsonResponse({'error': 'Body must be valid JSON.'}, status=400)
+            return JsonResponse({'error': 'El cuerpo debe ser JSON válido.'}, status=400)
         if not isinstance(payload, dict):
-            return JsonResponse({'error': 'Body must be a JSON object.'}, status=400)
+            return JsonResponse({'error': 'El cuerpo debe ser un objeto JSON.'}, status=400)
     else:
         payload = request.POST
     form = MessageForm({'message': payload.get('message', '')})

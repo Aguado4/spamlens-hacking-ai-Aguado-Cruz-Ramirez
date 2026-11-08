@@ -8,12 +8,12 @@ class MessageForm(forms.Form):
         strip=True,
         widget=forms.Textarea(attrs={
             'rows': 5,
-            'placeholder': 'Paste the text message you received...',
+            'placeholder': 'Pega aquí el mensaje de texto que recibiste...',
             'aria-describedby': 'message-help',
             'spellcheck': 'false',
         }),
         error_messages={
-            'required': 'Paste a message first.',
-            'max_length': f'Messages are limited to {settings.SPAMLENS_MAX_CHARS} characters.',
+            'required': 'Primero pega un mensaje.',
+            'max_length': f'Los mensajes están limitados a {settings.SPAMLENS_MAX_CHARS} caracteres.',
         },
     )

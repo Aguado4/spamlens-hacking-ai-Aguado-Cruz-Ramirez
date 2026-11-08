@@ -41,15 +41,15 @@ class ClassifierLogicTests(SimpleTestCase):
 class ViewTests(SimpleTestCase):
     def test_page_renders(self):
         response = self.client.get(reverse('index'))
-        self.assertContains(response, 'Check my message')
+        self.assertContains(response, 'Revisar mi mensaje')
 
     def test_form_post_without_js(self):
         response = self.client.post(reverse('index'), {'message': 'Free prize inside'})
-        self.assertContains(response, 'Looks like spam')
+        self.assertContains(response, 'Parece spam')
 
     def test_fetch_post_returns_only_the_result(self):
         response = self.client.post(reverse('index'), {'message': 'Lunch?'}, headers={'X-Requested-With': 'fetch'})
-        self.assertContains(response, 'Looks legitimate')
+        self.assertContains(response, 'Parece legítimo')
         self.assertNotContains(response, '<html')
 
     def test_api_json(self):
