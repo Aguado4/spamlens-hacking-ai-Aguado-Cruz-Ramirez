@@ -1,0 +1,19 @@
+# Environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Model weights (download from Hugging Face / the GitHub release, see README)
+model/*
+!model/README.md
+
+# Django
+app/staticfiles/
+db.sqlite3
+
+# Notebook / local artifacts
+.ipynb_checkpoints/
+data/raw/
+*.log
+*.zip.part

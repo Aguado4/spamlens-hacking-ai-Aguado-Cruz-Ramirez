@@ -1,0 +1,50 @@
+<div class="result" id="result" aria-live="polite">
+  {% if form.errors %}
+    <p class="result__error" role="alert">{{ form.errors.message.0 }}</p>
+  {% elif prediction %}
+    <article class="verdict verdict--{{ prediction.label }}">
+      <header class="verdict__head">
+        <span class="verdict__icon" aria-hidden="true">
+          {% if prediction.label == 'spam' %}
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          {% else %}
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          {% endif %}
+        </span>
+        <div>
+          <p class="verdict__label">{% if prediction.label == 'spam' %}Looks like spam{% else %}Looks legitimate{% endif %}</p>
+          <p class="verdict__sub">
+            {% if prediction.label == 'spam' %}Do not reply, call the number or open any link in it.{% else %}Nothing here matches the patterns of spam we trained on.{% endif %}
+          </p>
+        </div>
+      </header>
+
+      <div class="meter" style="--p: {{ prediction.spam_probability }}; --t: {{ prediction.threshold }}">
+        <div class="meter__track" role="img" aria-label="Spam probability {% widthratio prediction.spam_probability 1 100 %} percent, decision threshold {% widthratio prediction.threshold 1 100 %} percent">
+          <span class="meter__fill"></span>
+          <span class="meter__threshold" title="Decision threshold"></span>
+        </div>
+        <div class="meter__legend">
+          <span>Spam probability <strong class="mono">{% widthratio prediction.spam_probability 1 100 %}%</strong></span>
+          <span class="muted">flagged at {% widthratio prediction.threshold 1 100 %}% or more</span>
+        </div>
+      </div>
+
+      {% if prediction.words %}
+        <div class="why">
+          <h3 class="why__title">Which words moved the score</h3>
+          <p class="why__text">{% for w in prediction.words %}<span class="tok{% if w.weight > 0.05 %} tok--spam{% elif w.weight < -0.05 %} tok--ham{% endif %}" style="--s: {{ w.strength }}" title="{% if w.weight > 0 %}+{% endif %}{{ w.weight|floatformat:2 }} log-odds">{{ w.text }}</span> {% endfor %}</p>
+          <p class="why__legend"><span class="swatch swatch--spam"></span>pushes toward spam <span class="swatch swatch--ham"></span>pushes toward legitimate</p>
+        </div>
+      {% endif %}
+
+      {% if prediction.signals %}
+        <ul class="signals" aria-label="Spam cues detected">
+          {% for s in prediction.signals %}<li>{{ s }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+
+      <p class="verdict__meta mono">Answered in {{ prediction.latency_ms }} ms. Not stored.</p>
+    </article>
+  {% endif %}
+</div>

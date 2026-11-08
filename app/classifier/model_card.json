@@ -1,0 +1,60 @@
+{
+  "base_model": "Goodmotion/spam-mail-classifier",
+  "architecture": "BertForSequenceClassification",
+  "parameters_millions": 118,
+  "max_length": 128,
+  "threshold": 0.4794,
+  "dataset": {
+    "name": "SMS Spam Collection (UCI)",
+    "raw_messages": 5574,
+    "unique_messages": 5160,
+    "spam_share": 0.1244,
+    "split": {
+      "train": 3612,
+      "validation": 774,
+      "test": 774
+    }
+  },
+  "training": {
+    "epochs": 3,
+    "batch_size": 32,
+    "learning_rate": 3e-05,
+    "frozen": "word embeddings",
+    "best_epoch": 1
+  },
+  "test_metrics": {
+    "baseline_tfidf_logreg": {
+      "threshold": 0.5,
+      "accuracy": 0.9922,
+      "precision": 0.9891,
+      "recall": 0.9479,
+      "f1": 0.9681,
+      "roc_auc": 0.998,
+      "avg_precision": 0.9922,
+      "false_positives": 1.0,
+      "false_negatives": 5.0
+    },
+    "pretrained_zero_shot": {
+      "threshold": 0.5,
+      "accuracy": 0.4212,
+      "precision": 0.1364,
+      "recall": 0.6875,
+      "f1": 0.2276,
+      "roc_auc": 0.6169,
+      "avg_precision": 0.177,
+      "false_positives": 418.0,
+      "false_negatives": 30.0
+    },
+    "pretrained_fine_tuned": {
+      "threshold": 0.4794,
+      "accuracy": 0.991,
+      "precision": 0.9684,
+      "recall": 0.9583,
+      "f1": 0.9634,
+      "roc_auc": 0.9992,
+      "avg_precision": 0.9944,
+      "false_positives": 3.0,
+      "false_negatives": 4.0
+    }
+  }
+}
