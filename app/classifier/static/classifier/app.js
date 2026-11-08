@@ -35,6 +35,19 @@
     submit.disabled = true;
     submit.classList.add('is-loading');
     submit.querySelector('.btn__text').textContent = 'Leyendo...';
+    // Visible progress in the result area: the first check also loads the model and can take ~10 s.
+    const slowHint = setTimeout(() => {
+      const hint = document.querySelector('[data-loading-hint]');
+      if (hint) hint.textContent = 'La primera revisión carga el modelo en memoria, puede tardar unos segundos más.';
+    }, 2500);
+    document.getElementById('result').innerHTML = `
+      <div class="loading" role="status">
+        <div class="loading__head"><span class="loading__dot"></span><span class="loading__dot"></span><span class="loading__dot"></span>
+          <strong>Analizando tu mensaje...</strong></div>
+        <div class="loading__bar"></div>
+        <div class="loading__line"></div><div class="loading__line loading__line--short"></div>
+        <p class="loading__hint muted" data-loading-hint></p>
+      </div>`;
     try {
       const res = await fetch(form.action, {
         method: 'POST',
@@ -52,6 +65,7 @@
       document.getElementById('result').innerHTML =
         '<p class="result__error" role="alert">Algo salió mal al contactar el modelo. Inténtalo de nuevo en un momento.</p>';
     } finally {
+      clearTimeout(slowHint);
       submit.disabled = false;
       submit.classList.remove('is-loading');
       submit.querySelector('.btn__text').textContent = 'Revisar mi mensaje';

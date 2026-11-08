@@ -8,7 +8,7 @@ from django.test import SimpleTestCase
 from django.urls import reverse
 
 from . import services
-from .services import SpamClassifier, detect_signals
+from .services import SpamClassifier, detect_signals, word_weights
 
 
 def stub_classifier(threshold=0.5):
@@ -16,6 +16,7 @@ def stub_classifier(threshold=0.5):
     clf.source, clf.is_finetuned, clf.threshold = 'stub', True, threshold
     # "prize" is worth +4 log-odds of spam; everything else is neutral.
     clf.spam_log_odds = lambda texts: [2.0 if 'prize' in t.lower() else -2.0 for t in texts]
+    clf.explain = lambda words: word_weights(words, [4.0 if w.lower() == 'prize' else 0.0 for w in words])
     return clf
 
 
@@ -25,11 +26,12 @@ class ClassifierLogicTests(SimpleTestCase):
         self.assertEqual(clf.predict('You won a prize').label, 'spam')
         self.assertEqual(clf.predict('See you at lunch').label, 'ham')
 
-    def test_explanation_credits_the_decisive_word(self):
-        words = stub_classifier().predict('Claim your prize today').words
-        weights = {w['text']: w['weight'] for w in words}
-        self.assertEqual(weights['prize'], 4.0)
-        self.assertEqual(weights['Claim'], 0.0)
+    def test_word_weights_are_relative_to_the_strongest_word(self):
+        weights = {w.text: w for w in word_weights(['Claim', 'your', 'prize', 'mom'], [1.0, 0.05, 2.0, -0.6])}
+        self.assertEqual(weights['prize'].strength, 1.0)
+        self.assertEqual(weights['prize'].direction, 'spam')
+        self.assertEqual(weights['your'].direction, '')
+        self.assertEqual(weights['mom'].direction, 'ham')
 
     def test_signals_follow_eda_cues(self):
         signals = detect_signals('WIN £500 cash now! Call 0800123456 or visit www.example.com')

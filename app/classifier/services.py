@@ -15,7 +15,9 @@ from pathlib import Path
 from django.conf import settings
 
 MODEL_CARD_PATH = Path(__file__).resolve().parent / 'model_card.json'
-MAX_EXPLAINED_WORDS = 60
+IG_STEPS = 16
+# A word is highlighted when it carries at least this share of the message's strongest attribution.
+HIGHLIGHT_SHARE = 0.25
 
 # Same cues the notebook's EDA found to separate spam from ham (section 2.1).
 SIGNAL_PATTERNS = {
@@ -31,11 +33,19 @@ SIGNAL_PATTERNS = {
 class WordWeight:
     text: str
     weight: float
+    strength: float = 0.0
+    direction: str = ''
 
-    @property
-    def strength(self):
-        # 0..1 highlight intensity; a swing of 3 log-odds from one word is already decisive.
-        return round(min(1.0, abs(self.weight) / 3), 2)
+
+def word_weights(words, attributions):
+    """Scale attributions to 0..1 relative to the strongest word in this message."""
+    peak = max((abs(a) for a in attributions), default=0.0)
+    out = []
+    for word, a in zip(words, attributions):
+        share = abs(a) / peak if peak > 1e-6 else 0.0
+        direction = ('spam' if a > 0 else 'ham') if share >= HIGHLIGHT_SHARE else ''
+        out.append(WordWeight(word, round(a, 3), round(share, 2), direction))
+    return out
 
 
 @dataclass
@@ -89,6 +99,7 @@ class SpamClassifier:
 
                 self._tokenizer = AutoTokenizer.from_pretrained(self.source)
                 self._model = AutoModelForSequenceClassification.from_pretrained(self.source, dtype=torch.float32).eval()
+                self._model.requires_grad_(False)
         return self._tokenizer, self._model
 
     def spam_log_odds(self, texts):
@@ -101,18 +112,36 @@ class SpamClassifier:
             logits = model(**batch).logits
             return (logits[:, 1] - logits[:, 0]).tolist()
 
-    def explain(self, text, base_log_odds):
-        """Word-level occlusion: how far the spam log-odds fall when each word is removed.
+    def explain(self, words):
+        """Integrated Gradients over the input embeddings, summed per word.
 
-        Log-odds rather than probability, because a confident 0.999 barely moves in probability
-        space when one word goes, which would hide which words mattered.
+        Removing one word at a time fails on spam: with "FREE", "prize", "£1000" and a short code in
+        the same message, any single word is redundant and every score looks like zero. Integrated
+        Gradients walks from a neutral input to the real one and shares the log-odds among all the
+        words that carry the signal, even when they repeat each other.
         """
-        words = text.split()
-        if len(words) < 2 or len(words) > MAX_EXPLAINED_WORDS:
-            return [WordWeight(w, 0.0) for w in words]
-        variants = [' '.join(words[:i] + words[i + 1:]) for i in range(len(words))]
-        scores = self.spam_log_odds(variants)
-        return [WordWeight(w, round(base_log_odds - s, 3)) for w, s in zip(words, scores)]
+        import torch
+
+        tokenizer, model = self._load()
+        enc = tokenizer(words, is_split_into_words=True, truncation=True, max_length=128, return_tensors='pt')
+        embed = model.get_input_embeddings()
+        with torch.no_grad():
+            actual = embed(enc['input_ids'])
+            special = torch.tensor(tokenizer.get_special_tokens_mask(enc['input_ids'][0].tolist(), already_has_special_tokens=True), dtype=torch.bool)
+            neutral = actual.clone()
+            neutral[0, ~special] = embed.weight[tokenizer.pad_token_id]
+        alphas = torch.linspace(1 / IG_STEPS, 1, IG_STEPS).view(-1, 1, 1)
+        path = (neutral + alphas * (actual - neutral)).requires_grad_(True)
+        with torch.enable_grad():
+            logits = model(inputs_embeds=path, attention_mask=enc['attention_mask'].expand(IG_STEPS, -1)).logits
+            grads = torch.autograd.grad((logits[:, 1] - logits[:, 0]).sum(), path)[0]
+        per_token = ((actual - neutral)[0] * grads.mean(0)).sum(-1).tolist()
+
+        per_word = [0.0] * len(words)
+        for i, word_id in enumerate(enc.word_ids(0)):
+            if word_id is not None:
+                per_word[word_id] += per_token[i]
+        return word_weights(words, per_word)
 
     def predict(self, text):
         start = time.perf_counter()
@@ -124,7 +153,7 @@ class SpamClassifier:
             spam_probability=round(probability, 4),
             threshold=self.threshold,
             confidence=round(probability if is_spam else 1 - probability, 4),
-            words=[{**asdict(w), 'strength': w.strength} for w in self.explain(text, log_odds)],
+            words=[asdict(w) for w in self.explain(text.split())],
             signals=detect_signals(text),
             latency_ms=round((time.perf_counter() - start) * 1000),
         )

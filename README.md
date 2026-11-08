@@ -119,7 +119,7 @@ The tests replace the transformer with a stub, so they run in milliseconds and d
 
 * **No database.** Messages are classified in memory and never logged or stored. This is the data-minimization lesson from the privacy reading applied to the product.
 * **Threshold chosen on validation, never on test.** We compared a default 0.5, max-F1 and precision-first rules on the validation split. The fine-tuned model's probabilities are very peaked, so with only 97 validation spam messages the precision-first rules pushed the threshold above 0.99 and gave up recall for noise; max-F1 was the stable choice. The test set is used once, at the end.
-* **Explanations by occlusion.** Each word is removed in turn and the change in spam probability is shown as a red (toward spam) or green (toward legitimate) highlight.
+* **Explanations with Integrated Gradients.** The model's spam log-odds are attributed to each word by integrating gradients along a path from a neutral input to the real message. Removing one word at a time does not work for spam, because cues like "FREE", a prize amount and a short code back each other up and every single removal looks harmless. Words are highlighted in red (toward spam) or green (toward legitimate), scaled relative to the strongest word in the message.
 * **Progressive enhancement.** The page works with JavaScript disabled (plain form post); with JavaScript it updates in place, animates the result and supports Ctrl+Enter.
 
 ## Data and model credits

@@ -33,7 +33,7 @@
       {% if prediction.words %}
         <div class="why">
           <h3 class="why__title">Qué palabras movieron la puntuación</h3>
-          <p class="why__text">{% for w in prediction.words %}<span class="tok{% if w.weight > 0.05 %} tok--spam{% elif w.weight < -0.05 %} tok--ham{% endif %}" style="--s: {{ w.strength }}" title="{% if w.weight > 0 %}+{% endif %}{{ w.weight|floatformat:2 }} log-odds">{{ w.text }}</span> {% endfor %}</p>
+          <p class="why__text">{% for w in prediction.words %}<span class="tok{% if w.direction %} tok--{{ w.direction }}{% endif %}" style="--s: {{ w.strength }}" title="{% if w.weight > 0 %}+{% endif %}{{ w.weight|floatformat:2 }} log-odds">{{ w.text }}</span> {% endfor %}</p>
           <p class="why__legend"><span class="swatch swatch--spam"></span>empuja hacia spam <span class="swatch swatch--ham"></span>empuja hacia legítimo</p>
         </div>
       {% endif %}
