@@ -36,7 +36,7 @@ Spam-class metrics on the held-out test set (774 messages, 96 spam).
 
 * The pretrained model was trained on *email subjects*. Used as published, it flags most ordinary SMS as spam: a domain shift that no threshold can fix.
 * Fine-tuning the same network on the SMS training split (about 8 minutes on a laptop CPU) lifts spam F1 from about 0.23 to about 0.96.
-* A well-tuned TF-IDF + logistic regression model is practically tied with it on F1 for English SMS. The transformer ranks messages better (higher ROC-AUC and average precision) and still catches typical Spanish scams, which the TF-IDF model misses entirely. English-only fine-tuning did cost some multilingual ability: a French prize scam the original model caught now slips through.
+* A well-tuned TF-IDF + logistic regression model is slightly better on English SMS in F1 (0.968 vs 0.963), precision (0.989 vs 0.968) and false positives (1 vs 3), though the gap is one or two messages out of 774 and not conclusive. The transformer only edges it out in ROC-AUC and average precision, and still catches typical Spanish scams, which the TF-IDF model misses entirely. We ship the transformer because the assignment asks for the pretrained model and for its partial multilingual coverage, not for a better F1. English-only fine-tuning did cost some multilingual ability: a French prize scam the original model caught now slips through.
 
 The full reasoning, with charts, is in the notebook.
 
